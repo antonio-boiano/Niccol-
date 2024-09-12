@@ -3,8 +3,9 @@
 import os
 import pyshark
 import pandas as pd
+VERSION = 2
 
-dir_path = r"C:\Users\User\Documents\Niccolò\PoliMi\Tesi\acquisition_v4\useful"
+dir_path = f"/home/antonio/Desktop/FL IoT Forensics/Niccol-/acquisition_v{VERSION}/useful"
 dict_list = list()
 
 for file in os.listdir(dir_path):
@@ -12,6 +13,7 @@ for file in os.listdir(dir_path):
     pcap = pyshark.FileCapture(os.path.join(dir_path, file))
 
     for packet in pcap:
+        packet_time = packet.frame_info.time
         if("v4" in dir_path and 
            file == 'physicalInteraction1.pcapng' and packet.number == '2126' or
            file == 'physicalInteraction2.pcapng' and packet.number == '1556' or
@@ -91,7 +93,8 @@ for file in os.listdir(dir_path):
                         'Destination Zigbee': packet_destination_zigbee, 
                         'FCF Zigbee': zigbee_frame_control_field, 
                         'Payload Length': packet_payload_length,
-                        'Extended Source': extended_packet_source})
+                        'Extended Source': extended_packet_source,
+                        'File': file})
 
 dataFrame = pd.DataFrame(dict_list)
-dataFrame.to_csv('final_dataFrame_v4.csv')
+dataFrame.to_csv(f'final_dataFrame_v{VERSION}_anto.csv')
